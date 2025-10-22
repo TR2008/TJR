@@ -1,0 +1,21 @@
+body {
+  background-color: #f4f4f4;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #333;
+  text-align: center;
+}
+.login-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 280px; /* Ajuste a largura conforme necessário */
+
+    /* Posiciona no canto superior direito */
+    position: absolute; /* ou 'fixed' */
+    top: 20px;
+    right: 20px;
+}
