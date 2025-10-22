@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulário de Acesso</title> </head>
+<body>
+<form method="POST">
+    {{ form.hidden_tag() }}  {{ form.nome.label }}
+    {{ form.nome() }}
+
+    {{ form.senha.label }}
+    {{ form.senha() }}
+
+    {{ form.submit() }}
+</form>
+</body>
+</html>

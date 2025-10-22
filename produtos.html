@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Serviços - HVACSolution81</title>
+    <style>
+         body {
+        /* ...outras regras do body... */
+        background-image: url('images/TJRArcondicionado.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center ; /* Centraliza a imagem */
+        }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f9f9f9; margin: 0; padding: 0; }
+        .cabecalho { background-color: #003366; color: white; padding: 20px; text-align: center; font-size: 28px; }
+        .servico { background-color: white; margin: 20px auto; padding: 20px; width: 80%; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .servico h3 { margin-top: 0; color: #003366; }
+        .servico p { margin: 10px 0; }
+    </style>
+
+</head>
+<body>
+    <div class="cabecalho">Serviços HVAC</div>
+
+
+ <h1>Instal Assit Repare| Pacotes</h1>
+
+    <div class="product-card">
+        <h3>Instalação Simples </h3>
+        <p>Preço: 150.00 €</p>
+        <button onclick="addToBasket('1')">
+            Adicionar ao Cesto
+        </button>
+    </div>
+     <div class="product-card">
+        <h3>Instalação Normal </h3>
+        <p>Preço: 200.00 €</p>
+        <button onclick="addToBasket('2')">
+            Adicionar ao Cesto
+        </button>
+    </div>
+     <div class="product-card">
+        <h3>Instalação Multi II </h3>
+        <p>Preço: 350.00 €</p>
+        <button onclick="addToBasket('3')">
+            Adicionar ao Cesto
+        </button>
+    </div>
+     <div class="product-card">
+        <h3>Instalação Multi III</h3>
+        <p>Preço: 550.00 €</p>
+        <button onclick="addToBasket('4')">
+            Adicionar ao Cesto
+        </button>
+    </div>
+
+    <div id="basket-display">
+        <ul id="item-list"></ul>
+        <p>Total: <strong id="basket-total">0.00 €</strong></p>
+        <p>Itens: <span id="basket-count">0</span></p>
+    </div>
+
+    <button onclick="window.location.href='/checkout_form'">Finalizar Compra</button>
+
+    <script>
+        // Função para atualizar a interface do cesto
+        function updateBasketDisplay(basketData) {
+            const list = document.getElementById('item-list');
+            list.innerHTML = ''; // Limpa a lista atual
+
+            // A chave do item é o ID do produto
+            for (const id in basketData.basket) {
+                const item = basketData.basket[id];
+                const li = document.createElement('li');
+                li.innerHTML = `${item.name} (x${item.quantity}) - ${(item.price * item.quantity).toFixed(2)} €
+                                <button onclick="removeFromBasket('${id}')">Remover 1</button>
+                                <button onclick="removeFromBasket('${id}', true)">Remover TUDO</button>`;
+                list.appendChild(li);
+            }
+
+            // Atualiza o resumo
+            document.getElementById('basket-total').textContent = `${basketData.summary.total.toFixed(2)} €`;
+            document.getElementById('basket-count').textContent = basketData.summary.num_items;
+        }
+
+        // 1. Serviço: ADICIONAR ITEM
+        // Apenas envia o ID, o backend faz o resto.
+        async function addToBasket(id, quantity = 1) {
+            const response = await fetch('/api/basket/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                // Envia apenas o ID e a quantidade (que é 1 por omissão)
+                body: JSON.stringify({ id: id, quantity: quantity })
+            });
+            const data = await response.json();
+            if (data.success) {
+                updateBasketDisplay(data);
+            } else {
+                alert('Erro ao adicionar item: ' + data.message);
+            }
+        }
+
+        // 2. Serviço: REMOVER ITEM
+        async function removeFromBasket(id, removeAll = false) {
+            const response = await fetch('/api/basket/remove', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                // Envia o ID e uma flag para remover tudo ou apenas um
+                body: JSON.stringify({ id: id, remove_all: removeAll })
+            });
+            const data = await response.json();
+            if (data.success) {
+                updateBasketDisplay(data);
+            } else {
+                alert('Erro ao remover item: ' + data.message);
+            }
+        }
+
+        // 3. Serviço: Inicializa o cesto ao carregar a página (GET)
+        document.addEventListener('DOMContentLoaded', async () => {
+            const response = await fetch('/api/basket');
+            const data = await response.json();
+            updateBasketDisplay(data);
+        });
+    </script>
+<div class="image-box">
+  <img src="{{ url_for('static', filename='images/TJRArcondicionado.png') }}" alt="
+   TJR- Ar Condicionado">
+</div>
+</body>
+</html>

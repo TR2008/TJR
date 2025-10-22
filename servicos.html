@@ -1,0 +1,119 @@
+
+  <!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Produtos - HVACSolution81</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #eef6ff; margin: 0; padding: 0; }
+        .cabecalho { background-color: #003366; color: white; padding: 20px; text-align: center; font-size: 28px; }
+        .produto { background-color: white; margin: 20px auto; padding: 20px; width: 80%; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .produto h3 { margin-top: 0; color: #003366; }
+        .produto p { margin: 10px 0; }
+        tr:nth-child(even) {
+  background-color: rgba(150, 212, 212, 0.4);
+
+}
+      .button {background-color: #e7e7e7; color: black;}
+
+    </style>
+</head>
+<body>
+<div class="cabecalho">Produtos HVAC</div>
+
+<div class="produto">
+    <h3>Comercializamos</h3>
+    <p>Soluções de Ar Condicionado & Refrigeraçao</p>
+    <table>
+        <tr>
+
+            <th>Produtos</th>
+            <th>Preços</th>
+            <th>Comercial</th>
+            <th>Preços</th>
+            <th>Refrigeração</th>
+            <th>Valores Orçar</th>
+
+
+        </tr>
+        <tr>
+            <td>Preço hora</td>
+            <td>14.50€</td>
+            <td>Orçamentos</td>
+            <td>Gratuitos</td>
+            <td>Peças + Mão Obra</td>
+            <td>Valor a Orçar</td>
+        </tr>
+        <tr>
+            <td>Serviços de Reparação</td>
+            <td>60€</td>
+            <td>Venda de equimentos tipo
+                Murais
+            </td>
+            <td></td>
+            <td>Venda Frigorificos</td>
+        </tr>
+        <tr>
+            <td>Assitência Tecnica</td>
+            <td>90€</td>
+            <td>Tecto Chão</td>
+            <td></td>
+            <td>Venda de Maquinas de Gelo</td>
+        </tr>
+        <tr>
+
+        </tr>
+    </table>
+    <h2>Marcas </h2>
+    <h3>Modelos </h3>
+    <h3> Combinados- Unidade Exterior-Unidade Interior</h3>
+    <table>
+        <tr>
+        <th>Murais <th><th>Potência Electrica<th><th>Capacidade Termal</th>
+        <th></th></th><th>Chão Tecto</th><th>Potencia Electrica<th>Capacidade Termal</th>
+        <th>Conduta</th><th>Potencia Electrica</th><th>Capacidade Termal</th>
+        <th>Verticais</th><th>Potencia Electrica</th><th>Capacidade Termal</th>
+        </tr>
+<tr>
+            <td>Samsung</td><td></td><td>3,0KW</td><td></td><td>9000.00btus</td>
+    <tr>
+            <td>Samsung</td><td></td><td>5,5KW</td><td></td><td>9000.00btus</td>
+        <tr>
+            <td>Samsung</td><td></td><td>7,0KW</td><td></td><td>18000.00btus</td>
+    </tr>
+        <tr>
+            <td>LG</td></tr>
+        <tr>
+            LG
+            </tr>
+            <td>Toyotomi</td>
+        </tr>
+        <tr>
+            <td>AirAiwell</td>
+        </tr>
+
+
+
+
+
+
+    </table>
+</div>
+<form action="templates/index.html" method="get">
+      <button type="button" onclick="history.back()">Recuar</button>
+  <button type="submit" formtarget="_blank">Avançar</button>
+</form>
+
+
+<div class="produto">
+    <h3>Ventiladores Industriais</h3>
+    <p>Instalamos ventiladores para garantir a Qualidade do Ar </p>
+</div>
+<ul>
+    {% for p in produtos %}
+    <li>{{ p.nome }} - {{ p.categoria }} - €{{ p.preco }}</li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>
