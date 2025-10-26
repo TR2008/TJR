@@ -23,7 +23,7 @@
 
         /* Header and Navigation */
         .cabecalho {
-            background-color: #003366;
+            background-color:#FF4500;
             color: white;
             padding: 30px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -147,45 +147,48 @@
         }
     </style>
 <body>
-    <header class="cabecalho">
-        <div class="header-flex">
-            <div class="logo">HVACSolution81</div>
-            <nav class="nav-links">
-                <a href="{{ url_for('auth.login') }}">Login</a>
-                <a href="{{ url_for('auth.register') }}">Registar</a>
-                <a href="{{ url_for('paginas.sobre') }}">Sobre</a>
-            </nav>
+<header class="cabecalho">
+    <div class="header-flex">
+        <div class="logo">HVACSolution81</div>
+        <nav class="nav-links">
+            <a href="{{ url_for('paginas.produtos_html')}}">Produtos</a>
+            <a href="{{ url_for('paginas.servicos_html') }}">Serviços</a>
+            <a href="{{ url_for('paginas.contactos') }}">Contactos</a>
+            <a href="{{ url_for('auth.logout') }}">Sair</a>
+        </nav>
+    </div>
+    <p class="subtitulo">Instaladores de A.C., Assitência Tecnica , Climatização, Bombas de Calor, Free Cooling  pensamos sempre no
+        seu
+        conforto</p>
+</header>
+
+<main>
+    <div class="content-container">
+        <div class="form-container">
+            <h2>Login</h2>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <label for="email">{{ form.email.label }}</label>
+                {{ form.email(size=32) }}
+
+                <label for="senha">{{ form.senha.label }}</label>
+                {{ form.senha(size=32) }}
+
+                <button type="submit" class="btn-primary">Entrar</button>
+                <a href="{{ url_for('auth.register') }}">
+                    <button type="button" class="btn-secondary">Criar Conta</button>
+                </a>
+            </form>
+            {% if mensagem %}
+            <p class="mensagem">{{ mensagem }}</p>
+            {% endif %}
         </div>
-        <p class="subtitulo">Soluções inteligentes para climatização</p>
-    </header>
 
-    <main>
-        <div class="content-container">
-            <div class="form-container">
-                <h2>Entrar</h2>
-                <form method="POST">
-                    {{ form.hidden_tag() }}
-                    <label for="email">{{ form.email.label }}</label>
-                    {{ form.email(size=32) }}
-
-                    <label for="senha">{{ form.senha.label }}</label>
-                    {{ form.senha(size=32) }}
-
-                    <button type="submit" class="btn-primary">Entrar</button>
-                    <a href="{{ url_for('auth.register') }}">
-                        <button type="button" class="btn-secondary">Criar Conta</button>
-                    </a>
-                </form>
-                {% if mensagem %}
-                    <p class="mensagem">{{ mensagem }}</p>
-                {% endif %}
-            </div>
-
-            <div class="image-box">
-                <img src="{{ url_for('static', filename='images/TJRArcondicionado.png') }}" alt="Imagem institucional">
-            </div>
+        <div class="image-box">
+            <img src="{{ url_for('static', filename='images/TJRArcondicionado.png') }}" alt="Imagem institucional">
         </div>
-    </main>
+    </div>
+</main>
 </body>
 </html>
 

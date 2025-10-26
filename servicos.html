@@ -5,21 +5,22 @@
     <meta charset="UTF-8">
     <title>Produtos - HVACSolution81</title>
     <style>
+
         body { font-family: 'Segoe UI', sans-serif; background-color: #eef6ff; margin: 0; padding: 0; }
-        .cabecalho { background-color: #003366; color: white; padding: 20px; text-align: center; font-size: 28px; }
+        .cabecalho { background-color: #FF4500; color: white; padding: 20px; text-align: center; font-size: 28px; }
         .produto { background-color: white; margin: 20px auto; padding: 20px; width: 80%; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .produto h3 { margin-top: 0; color: #003366; }
+        .produto h3 { margin-top: 0; color: #FF4500; }
         .produto p { margin: 10px 0; }
         tr:nth-child(even) {
   background-color: rgba(150, 212, 212, 0.4);
 
 }
-      .button {background-color: #e7e7e7; color: black;}
+      .button {background-color#FF4500: color: black;}
 
     </style>
 </head>
 <body>
-<div class="cabecalho">Produtos HVAC</div>
+<div class="cabecalho">Produtos e Serviços </div>
 
 <div class="produto">
     <h3>Comercializamos</h3>
@@ -99,11 +100,12 @@
 
     </table>
 </div>
-<form action="templates/index.html" method="get">
-      <button type="button" onclick="history.back()">Recuar</button>
-  <button type="submit" formtarget="_blank">Avançar</button>
-</form>
-
+<div class="navegacao-destaque">
+    <form action="/index" method="get">
+        <button type="button" onclick="history.back()">⟵ Recuar</button>
+        <button type="submit" formtarget="_blank">Avançar ⟶</button>
+    </form>
+</div>
 
 <div class="produto">
     <h3>Ventiladores Industriais</h3>
