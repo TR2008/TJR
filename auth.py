@@ -1,53 +1,83 @@
-from flask import Blueprint, request, render_template, redirect, url_for, session
+from flask import Blueprint, render_template, redirect, url_for, flash
 from models import Utilizador, db
+from forms import RegisterForm
+from werkzeug.security import generate_password_hash
 from forms import LoginForm
+from flask_login import logout_user, login_required
 
 auth_bp = Blueprint('auth', __name__)
 
-@auth_bp.route('/')
-def home():
-    if 'utilizador_id' in session:
-        return redirect(url_for('dashboard'))
-    return redirect(url_for('auth.login'))
+
+
+@auth_bp.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm()
+
+    if form.validate_on_submit():
+        nome = form.nome.data
+        email = form.email.data
+        senha = form.senha.data
+
+        # Verifica se o e-mail já existe
+        if Utilizador.query.filter_by(email=email).first():
+            flash('Este e-mail já está em uso.', 'danger')
+            return render_template('auth/criar_utilizador.html', form=form)
+
+        # Cria novo utilizador
+        novo_utilizador = Utilizador(
+            nome=nome,
+            email=email,
+            senha_hash=generate_password_hash(senha)
+        )
+        db.session.add(novo_utilizador)
+        db.session.commit()
+
+        flash('Conta criada com sucesso! Faça login.', 'success')
+        return redirect(url_for('auth.login'))
+
+    # Aqui é onde a função é usada para mostrar o formulário
+    return render_template('auth/criar_utilizador.html', form=form)
+
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    if request.method == 'POST' and form.validate_on_submit():
-        email = form.email.data
-        senha = form.password.data
-        utilizador = Utilizador.query.filter_by(email=email).first()
-        if utilizador and utilizador.verificar_senha(senha):
-            session['utilizador_id'] = utilizador.id
-            return redirect(url_for('dashboard'))
-        else:
-            erro = "Email ou password incorretos."
-            return render_template('index.html', form=form, erro=erro)
-    return render_template('index.html', form=form)
+
+    if form.validate_on_submit():
+        # lógica de autenticação
+        return redirect(url_for('paginas.dashboard'))  # ou outro destino
+
+    return render_template('auth/login.html', form=form)
+
 
 @auth_bp.route('/logout')
+@login_required
 def logout():
-    session.pop('utilizador_id', None)
+    logout_user()
+    flash('Sessão terminada com sucesso.', 'info')
     return redirect(url_for('auth.login'))
+@auth_bp.route('/auth', methods=['GET', 'POST'])
+def auth():
+    login_form = LoginForm()
+    register_form = RegisterForm()
+    modo = request.args.get('modo', 'login')  # 'login' ou 'cadastro'
 
-@auth_bp.route('/criar_utilizador', methods=['GET', 'POST'])
-def criar_utilizador():
-    if request.method == 'POST':
-        nome = request.form.get('nome')
-        email = request.form.get('email')
-        senha = request.form.get('senha')
+    if modo == 'cadastro' and register_form.validate_on_submit():
+        if Utilizador.query.filter_by(email=register_form.email.data).first():
+            flash('Este e-mail já está em uso.', 'danger')
+        else:
+            novo_utilizador = Utilizador(
+                nome=register_form.nome.data,
+                email=register_form.email.data,
+                senha_hash=generate_password_hash(register_form.senha.data)
+            )
+            db.session.add(novo_utilizador)
+            db.session.commit()
+            flash('Conta criada com sucesso!', 'success')
 
-        if not nome or not email or not senha:
-            return render_template('criar_utilizador.html', erro="Todos os campos são obrigatórios.")
+    elif modo == 'login' and login_form.validate_on_submit():
+        # lógica de login
+        return redirect(url_for('paginas.dashboard'))
 
-        if Utilizador.query.filter_by(email=email).first():
-            return render_template('criar_utilizador.html', erro="Email já está registado.")
-
-        novo = Utilizador(nome=nome, email=email)
-        novo.definir_senha(senha)
-        db.session.add(novo)
-        db.session.commit()
-        return redirect(url_for('auth.login'))
-
-    return render_template('criar_utilizador.html')
+    return render_template('auth/autenticacao.html', login_form=login_form, register_form=register_form, modo=modo)
 
