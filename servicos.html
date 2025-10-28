@@ -1,119 +1,309 @@
-
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <title>Produtos - HVACSolution81</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Produtos e Serviços - HVACSolution81</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #eef6ff; margin: 0; padding: 0; }
-        .cabecalho { background-color: #003366; color: white; padding: 20px; text-align: center; font-size: 28px; }
-        .produto { background-color: white; margin: 20px auto; padding: 20px; width: 80%; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .produto h3 { margin-top: 0; color: #003366; }
-        .produto p { margin: 10px 0; }
-        tr:nth-child(even) {
-  background-color: rgba(150, 212, 212, 0.4);
+        :root {
+            --accent: #FF4500;
+            --bg: #eef6ff;
+            --card: #ffffff;
+            --muted: #666;
+            --table-odd: rgba(150, 212, 212, 0.4);
+        }
 
-}
-      .button {background-color: #e7e7e7; color: black;}
+        body {
+            font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 0;
+            color: #222;
+            line-height: 1.4;
+        }
 
+        .cabecalho {
+            background-color: var(--accent);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 0 16px;
+        }
+
+        .produto {
+            background-color: var(--card);
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.06);
+        }
+
+        .produto h2,
+        .produto h3 {
+            margin-top: 0;
+            color: var(--accent);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        th,
+        td {
+            padding: 10px 8px;
+            border: 1px solid #e6eef6;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        tr:nth-child(even) td {
+            background-color: var(--table-odd);
+        }
+
+        .services-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+        }
+
+        .service-item {
+            background-color: #fafafa;
+            border: 1px solid #f0f0f0;
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        .service-item h4 {
+            margin: 0 0 6px 0;
+            color: #333;
+        }
+
+        .cta {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background-color: var(--accent);
+            border: none;
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn.secondary {
+            background-color: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+        }
+
+        .navegacao-destaque {
+            text-align: center;
+            margin: 14px 0;
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 700px) {
+            th,
+            td {
+                padding: 8px 6px;
+                font-size: 0.95rem;
+            }
+        }
     </style>
 </head>
 <body>
-<div class="cabecalho">Produtos HVAC</div>
+    <header class="cabecalho">Produtos e Serviços</header>
 
-<div class="produto">
-    <h3>Comercializamos</h3>
-    <p>Soluções de Ar Condicionado & Refrigeraçao</p>
-    <table>
-        <tr>
+    <main class="container">
+        <section class="produto" aria-labelledby="comercializamos">
+            <h2 id="comercializamos">Comercializamos</h2>
+            <p class="muted">Soluções de Ar Condicionado & Refrigeração — venda, instalação e manutenção.</p>
 
-            <th>Produtos</th>
-            <th>Preços</th>
-            <th>Comercial</th>
-            <th>Preços</th>
-            <th>Refrigeração</th>
-            <th>Valores Orçar</th>
+            <h3>Produtos e preços (exemplos)</h3>
+            <table aria-label="Tabela de produtos e preços">
+                <thead>
+                    <tr>
+                        <th>Serviço / Produto</th>
+                        <th>Preço (indicativo)</th>
+                        <th>Observações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Preço hora (Técnico)</td>
+                        <td>14,50 €</td>
+                        <td>Deslocação não incluída</td>
+                    </tr>
+                    <tr>
+                        <td>Serviços de Reparação</td>
+                        <td>60,00 €</td>
+                        <td>Valor base (peças à parte)</td>
+                    </tr>
+                    <tr>
+                        <td>Assistência Técnica</td>
+                        <td>90,00 €</td>
+                        <td>Intervenção especializada</td>
+                    </tr>
+                    <tr>
+                        <td>Orçamentos</td>
+                        <td>Gratuito</td>
+                        <td>Sem compromisso</td>
+                    </tr>
+                    <tr>
+                        <td>Peças + Mão de Obra</td>
+                        <td>Valor a orçar</td>
+                        <td>Depende do equipamento</td>
+                    </tr>
+                </tbody>
+            </table>
 
+            <h3>Serviços que prestamos</h3>
+            <ul class="services-list">
+                <li class="service-item">
+                    <h4>Instalação de Sistemas de Ar Condicionado</h4>
+                    <p class="muted">Montagem de unidades interiores e exteriores, ligação de tubagens e evacuação.</p>
+                </li>
+                <li class="service-item">
+                    <h4>Manutenção Preventiva</h4>
+                    <p class="muted">Limpeza, verificação de circuitos e prevenção de avarias — contratos disponíveis.</p>
+                </li>
+                <li class="service-item">
+                    <h4>Reparação e Diagnóstico</h4>
+                    <p class="muted">Identificação de avarias, substituição de componentes e testes finais.</p>
+                </li>
+                <li class="service-item">
+                    <h4>Refrigeração Comercial</h4>
+                    <p class="muted">Instalação e manutenção de câmaras frigoríficas, vitrines e frigoríficos comerciais.</p>
+                </li>
+                <li class="service-item">
+                    <h4>Venda de Equipamentos e Peças</h4>
+                    <p class="muted">Murais, chão-teto, conduta, verticais, compressores e peças de reposição.</p>
+                </li>
+                <li class="service-item">
+                    <h4>Ventiladores Industriais</h4>
+                    <p class="muted">Fornecimento e instalação para ventilação e renovação de ar em espaços industriais.</p>
+                </li>
+                <li class="service-item">
+                    <h4>Dimensionamento e Projeto</h4>
+                    <p class="muted">Cálculo de cargas térmicas, recomendação de equipamentos e layout de instalação.</p>
+                </li>
+                <li class="service-item">
+                    <h4>Contratos de Manutenção</h4>
+                    <p class="muted">Planos personalizados com visitas periódicas e prioridade de intervenção.</p>
+                </li>
+            </ul>
 
-        </tr>
-        <tr>
-            <td>Preço hora</td>
-            <td>14.50€</td>
-            <td>Orçamentos</td>
-            <td>Gratuitos</td>
-            <td>Peças + Mão Obra</td>
-            <td>Valor a Orçar</td>
-        </tr>
-        <tr>
-            <td>Serviços de Reparação</td>
-            <td>60€</td>
-            <td>Venda de equimentos tipo
-                Murais
-            </td>
-            <td></td>
-            <td>Venda Frigorificos</td>
-        </tr>
-        <tr>
-            <td>Assitência Tecnica</td>
-            <td>90€</td>
-            <td>Tecto Chão</td>
-            <td></td>
-            <td>Venda de Maquinas de Gelo</td>
-        </tr>
-        <tr>
+            <div class="cta">
+                <form action="/contact" method="get" style="margin:0;">
+                    <button class="btn" type="submit">Pedir Orçamento</button>
+                </form>
+                <button class="btn secondary" type="button" onclick="history.back()">⟵ Recuar</button>
+            </div>
+        </section>
 
-        </tr>
-    </table>
-    <h2>Marcas </h2>
-    <h3>Modelos </h3>
-    <h3> Combinados- Unidade Exterior-Unidade Interior</h3>
-    <table>
-        <tr>
-        <th>Murais <th><th>Potência Electrica<th><th>Capacidade Termal</th>
-        <th></th></th><th>Chão Tecto</th><th>Potencia Electrica<th>Capacidade Termal</th>
-        <th>Conduta</th><th>Potencia Electrica</th><th>Capacidade Termal</th>
-        <th>Verticais</th><th>Potencia Electrica</th><th>Capacidade Termal</th>
-        </tr>
-<tr>
-            <td>Samsung</td><td></td><td>3,0KW</td><td></td><td>9000.00btus</td>
-    <tr>
-            <td>Samsung</td><td></td><td>5,5KW</td><td></td><td>9000.00btus</td>
-        <tr>
-            <td>Samsung</td><td></td><td>7,0KW</td><td></td><td>18000.00btus</td>
-    </tr>
-        <tr>
-            <td>LG</td></tr>
-        <tr>
-            LG
-            </tr>
-            <td>Toyotomi</td>
-        </tr>
-        <tr>
-            <td>AirAiwell</td>
-        </tr>
+        <section class="produto" aria-labelledby="marcas-modelos">
+            <h2 id="marcas-modelos">Marcas e Modelos</h2>
+            <p class="muted">Alguns exemplos de modelos e capacidades (consultar ficha técnica antes de adquirir).</p>
 
+            <table aria-label="Tabela de modelos">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Marca</th>
+                        <th>Potência Elétrica</th>
+                        <th>Capacidade Térmica</th>
+                        <th>Observações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Murais</td>
+                        <td>Samsung</td>
+                        <td>3,0 kW</td>
+                        <td>9000 BTU</td>
+                        <td>Modelo residencial</td>
+                    </tr>
+                    <tr>
+                        <td>Murais</td>
+                        <td>Samsung</td>
+                        <td>5,5 kW</td>
+                        <td>15000 BTU</td>
+                        <td>Para salas maiores</td>
+                    </tr>
+                    <tr>
+                        <td>Murais</td>
+                        <td>Samsung</td>
+                        <td>7,0 kW</td>
+                        <td>18000 BTU</td>
+                        <td>Uso intensivo</td>
+                    </tr>
+                    <tr>
+                        <td>Chão-Teto</td>
+                        <td>LG</td>
+                        <td>—</td>
+                        <td>Consultar</td>
+                        <td>Unidade para espaços comerciais</td>
+                    </tr>
+                    <tr>
+                        <td>Verticais</td>
+                        <td>Toyotomi</td>
+                        <td>—</td>
+                        <td>Consultar</td>
+                        <td>Modelos industriais</td>
+                    </tr>
+                    <tr>
+                        <td>Conduta</td>
+                        <td>AirAiwell</td>
+                        <td>—</td>
+                        <td>Consultar</td>
+                        <td>Sistemas de conduta para edifícios</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
 
+        <section class="produto" aria-labelledby="ventiladores">
+            <h2 id="ventiladores">Ventiladores Industriais</h2>
+            <p class="muted">Fornecemos, instalamos e fazemos a manutenção de ventiladores industriais para diversas necessidades: exaustão, circulação e renovação de ar.</p>
+            <ul>
+                <li>Dimensionamento e seleção de ventiladores</li>
+                <li>Montagem e balanceamento</li>
+                <li>Contratos de manutenção e monitorização</li>
+            </ul>
+        </section>
 
-
-
-
-    </table>
-</div>
-<form action="templates/index.html" method="get">
-      <button type="button" onclick="history.back()">Recuar</button>
-  <button type="submit" formtarget="_blank">Avançar</button>
-</form>
-
-
-<div class="produto">
-    <h3>Ventiladores Industriais</h3>
-    <p>Instalamos ventiladores para garantir a Qualidade do Ar </p>
-</div>
-<ul>
-    {% for p in produtos %}
-    <li>{{ p.nome }} - {{ p.categoria }} - €{{ p.preco }}</li>
-    {% endfor %}
-</ul>
-
+        <section class="produto" aria-labelledby="lista-produtos">
+            <h2 id="lista-produtos">Catálogo (dinâmico)</h2>
+            <p class="muted">Lista de produtos extraída do sistema:</p>
+            <ul>
+                {% for p in produtos %}
+                    <li>{{ p.nome }} - {{ p.categoria }} - €{{ p.preco }}</li>
+                {% else %}
+                    <li>Nenhum produto disponível no momento.</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </main>
 </body>
 </html>

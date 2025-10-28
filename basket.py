@@ -1,78 +1,155 @@
 from flask import Blueprint, session, jsonify, request
 from models import Produto
+from decimal import Decimal
+import time
+import uuid
 
 basket_bp = Blueprint('basket', __name__)
 
-# Função auxiliar para obter o cesto da sessão
+# Helpers
 def get_basket():
     return session.get('basket', {})
 
-# Função auxiliar para calcular o total
 def calculate_total(basket):
-    total = 0
+    total = 0.0
     num_items = 0
     for item in basket.values():
-        total += item['price'] * item['quantity']
-        num_items += item['quantity']
+        price = float(item.get('price', 0) or 0)
+        qty = int(item.get('quantity', 0) or 0)
+        total += price * qty
+        num_items += qty
     return {'total': total, 'num_items': num_items}
 
-# GET: Ver cesto atual
+def _serialize_price(value):
+    if isinstance(value, Decimal):
+        return float(value)
+    try:
+        return float(value)
+    except Exception:
+        return 0.0
+
+def _save_basket(basket):
+    session['basket'] = basket
+    session.modified = True
+
+# Endpoints
 @basket_bp.route('/api/basket', methods=['GET'])
 def ver_cesto():
     if 'utilizador' not in session:
         return jsonify({'success': False, 'message': 'Não autenticado'}), 401
-
     basket = get_basket()
     summary = calculate_total(basket)
     return jsonify({'success': True, 'basket': basket, 'summary': summary})
 
-# POST: Adicionar item ao cesto
 @basket_bp.route('/api/basket/add', methods=['POST'])
 def adicionar_ao_cesto():
     if 'utilizador' not in session:
         return jsonify({'success': False, 'message': 'Não autenticado'}), 401
 
-    data = request.get_json()
-    produto_id = str(data.get('id'))
-    quantidade = int(data.get('quantity', 1))
+    data = request.get_json() or {}
+    produto_id = data.get('id')
+    if produto_id is None:
+        return jsonify({'success': False, 'message': 'ID do produto obrigatório'}), 400
 
-    produto = Produto.query.get(produto_id)
+    # Normalizar id (aceita strings enviados pelo template)
+    try:
+        produto_id_int = int(produto_id)
+    except Exception:
+        produto_id_int = None
+
+    quantidade = 1
+    try:
+        quantidade = int(data.get('quantity', 1) or 1)
+        if quantidade < 1:
+            quantidade = 1
+    except Exception:
+        quantidade = 1
+
+    produto = None
+    if produto_id_int is not None:
+        produto = Produto.query.get(produto_id_int)
+
+    # Fallback útil para testes: se não houver produto no DB, aceitar name+price no body
     if not produto:
-        return jsonify({'success': False, 'message': 'Produto não encontrado'}), 404
-
-    basket = get_basket()
-    if produto_id in basket:
-        basket[produto_id]['quantity'] += quantidade
+        name = data.get('name')
+        price = data.get('price')
+        if name is None or price is None:
+            return jsonify({'success': False, 'message': 'Produto não encontrado. Forneça name e price para fallback de teste.'}), 404
+        price = _serialize_price(price)
+        name = str(name)
     else:
-        basket[produto_id] = {
-            'name': produto.nome,
-            'price': produto.preco,
+        price = _serialize_price(getattr(produto, 'preco', 0))
+        name = getattr(produto, 'nome', f'Produto {produto_id}')
+
+    produto_key = str(produto_id)  # key no session (mantém correspondência com o JS)
+    basket = get_basket()
+    if produto_key in basket:
+        basket[produto_key]['quantity'] = int(basket[produto_key].get('quantity', 0)) + quantidade
+    else:
+        basket[produto_key] = {
+            'name': name,
+            'price': price,
             'quantity': quantidade
         }
 
-    session['basket'] = basket
+    _save_basket(basket)
     summary = calculate_total(basket)
     return jsonify({'success': True, 'basket': basket, 'summary': summary})
 
-# POST: Remover item do cesto
 @basket_bp.route('/api/basket/remove', methods=['POST'])
 def remover_do_cesto():
     if 'utilizador' not in session:
         return jsonify({'success': False, 'message': 'Não autenticado'}), 401
 
-    data = request.get_json()
-    produto_id = str(data.get('id'))
-    remover_tudo = data.get('remove_all', False)
+    data = request.get_json() or {}
+    produto_id = data.get('id')
+    if produto_id is None:
+        return jsonify({'success': False, 'message': 'ID do produto obrigatório'}), 400
+    remover_tudo = bool(data.get('remove_all', False))
 
+    produto_key = str(produto_id)
     basket = get_basket()
-    if produto_id not in basket:
+    if produto_key not in basket:
         return jsonify({'success': False, 'message': 'Item não está no cesto'}), 404
 
-    if remover_tudo or basket[produto_id]['quantity'] <= 1:
-        del basket[produto_id]
+    if remover_tudo or int(basket[produto_key].get('quantity', 1)) <= 1:
+        del basket[produto_key]
     else:
-        basket[produto_id]['quantity'] -= 1
+        basket[produto_key]['quantity'] = int(basket[produto_key].get('quantity', 1)) - 1
 
-    session['basket'] = basket
+    _save_basket(basket)
     summary = calculate_total(basket)
     return jsonify({'success': True, 'basket': basket, 'summary': summary})
+
+@basket_bp.route('/api/basket/clear', methods=['POST'])
+def clear_basket():
+    if 'utilizador' not in session:
+        return jsonify({'success': False, 'message': 'Não autenticado'}), 401
+    session.pop('basket', None)
+    session.modified = True
+    return jsonify({'success': True, 'basket': {}, 'summary': {'total': 0.0, 'num_items': 0}})
+
+@basket_bp.route('/api/basket/checkout', methods=['POST'])
+def checkout():
+    if 'utilizador' not in session:
+        return jsonify({'success': False, 'message': 'Não autenticado'}), 401
+
+    basket = get_basket()
+    if not basket:
+        return jsonify({'success': False, 'message': 'Cesto vazio'}), 400
+
+    summary = calculate_total(basket)
+    order = {
+        'order_id': str(uuid.uuid4()),
+        'created_at': int(time.time()),
+        'user': session.get('utilizador'),
+        'items': basket,
+        'summary': summary
+    }
+
+    # Em produção: gravar no DB (Order model). Aqui apenas guardamos em sessão.
+    session['last_order'] = order
+    session.pop('basket', None)
+    session.modified = True
+
+    return jsonify({'success': True, 'message': 'Encomenda criada', 'order': order, 'basket': {}, 'summary': {'total': 0.0, 'num_items': 0}})
