@@ -1,6 +1,6 @@
-from flask import Blueprint, request, render_template, redirect, url_for, session
+from flask import Blueprint, request, render_template, redirect, url_for, session, flash
 from models import Utilizador, db
-from forms import LoginForm
+from forms import LoginForm, RegistrationForm
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -13,17 +13,19 @@ def home():
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    if request.method == 'POST' and form.validate_on_submit():
+    # Use WTForms validate_on_submit() — it handles POST and CSRF checks.
+    if form.validate_on_submit():
         email = form.email.data
-        senha = form.password.data
+        senha = form.senha.data  # match field name in LoginForm
         utilizador = Utilizador.query.filter_by(email=email).first()
         if utilizador and utilizador.verificar_senha(senha):
             session['utilizador_id'] = utilizador.id
             return redirect(url_for('dashboard'))
         else:
             erro = "Email ou password incorretos."
-            return render_template('index.html', form=form, erro=erro)
-    return render_template('index.html', form=form)
+            flash(erro, "danger")
+            return render_template('auth/login.html', form=form, erro=erro)
+    return render_template('auth/login.html', form=form)
 
 @auth_bp.route('/logout')
 def logout():
@@ -32,22 +34,28 @@ def logout():
 
 @auth_bp.route('/criar_utilizador', methods=['GET', 'POST'])
 def criar_utilizador():
-    if request.method == 'POST':
-        nome = request.form.get('nome')
-        email = request.form.get('email')
-        senha = request.form.get('senha')
-
-        if not nome or not email or not senha:
-            return render_template('criar_utilizador.html', erro="Todos os campos são obrigatórios.")
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        nome = form.nome.data
+        email = form.email.data
+        senha = form.senha.data
 
         if Utilizador.query.filter_by(email=email).first():
-            return render_template('criar_utilizador.html', erro="Email já está registado.")
+            flash("Email já está registado.", "danger")
+            return render_template('criar_utilizador.html', form=form)
 
         novo = Utilizador(nome=nome, email=email)
         novo.definir_senha(senha)
         db.session.add(novo)
         db.session.commit()
+
+        flash("Conta criada com sucesso. Pode iniciar sessão.", "success")
         return redirect(url_for('auth.login'))
 
-    return render_template('criar_utilizador.html')
+    return render_template('criar_utilizador.html', form=form)
+
+# Alias so templates that call url_for('auth.register') work without changing them
+@auth_bp.route('/register', methods=['GET', 'POST'])
+def register():
+    return criar_utilizador()
 
