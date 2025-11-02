@@ -11,10 +11,18 @@ csrf = CSRFProtect()
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
-    app.config['SECRET_KEY'] = 'algum_valor_secreto'
+
+    # Secret key idealmente via CONFIG / variáveis ambiente
+    app.config.setdefault('SECRET_KEY', 'algum_valor_secreto')
+
+    # Sessão / cookie options — ajuste para produção
+    # Se o frontend e API estiverem no mesmo domínio use 'Lax' e SECURE=False (desenvolvimento)
+    # Se estiverem em domínios diferentes use 'None' E SECURE=True (HTTPS) e no frontend fetch credentials:'include'
+    app.config.setdefault('SESSION_COOKIE_SAMESITE', 'Lax')
+    app.config.setdefault('SESSION_COOKIE_SECURE', False)
 
     db.init_app(app)
-    csrf.init_app(app)  # ← Aplica CSRF depois de criar o app
+    csrf.init_app(app)
 
     with app.app_context():
         db.create_all()

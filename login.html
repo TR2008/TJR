@@ -81,7 +81,8 @@
 
             <div id="register-form" style="display:none; margin-top:12px;">
                 <h2>Registar</h2>
-                <form method="POST" action="{{ url_for('auth.register') }}">
+                <!-- changed endpoint name to match registered route -->
+                <form method="POST" action="{{ url_for('auth.register_alias') }}">
                     {% if reg_form is defined %}
                         {{ reg_form.hidden_tag() }}
                         {{ reg_form.nome(class="form-control", placeholder="Nome") }}

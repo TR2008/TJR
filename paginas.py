@@ -30,3 +30,19 @@ def servicos_html():
     if 'utilizador'  in session:
         return redirect(url_for('auth.login'))
     return render_template('paginas/servicos.html')
+@paginas_bp.route('/politica-privacidade', endpoint='politica_privacidade')
+def politica_privacidade():
+    return render_template('paginas/politica_privacidade.html')
+
+@paginas_bp.route('/termos-uso', endpoint='termos_uso')
+def sobre():
+    return render_template('paginas/sobre.html')
+
+
+# Nova rota para Referências
+@paginas_bp.route('/referencias', endpoint='referencias')
+def referencias():
+    # Permite acesso apenas se autenticado; ajuste conforme necessário
+    if 'utilizador' not in session:
+        return redirect(url_for('auth.login'))
+    return render_template('paginas/referencias.html')

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, redirect, url_for, session, flash
 from models import Utilizador, db
-from forms import LoginForm, RegistrationForm
+from forms import LoginForm, RegistrationForm, RegisterForm
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -13,12 +13,12 @@ def home():
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    # Use WTForms validate_on_submit() — it handles POST and CSRF checks.
     if form.validate_on_submit():
         email = form.email.data
-        senha = form.senha.data  # match field name in LoginForm
+        senha = form.senha.data
         utilizador = Utilizador.query.filter_by(email=email).first()
-        if utilizador and utilizador.verificar_senha(senha):
+        # usar o nome real do método do seu modelo
+        if utilizador and utilizador.check_password(senha):
             session['utilizador_id'] = utilizador.id
             return redirect(url_for('dashboard'))
         else:
@@ -45,7 +45,7 @@ def criar_utilizador():
             return render_template('criar_utilizador.html', form=form)
 
         novo = Utilizador(nome=nome, email=email)
-        novo.definir_senha(senha)
+        novo.set_password(senha)   # usar o nome real do método do seu modelo
         db.session.add(novo)
         db.session.commit()
 
@@ -54,8 +54,35 @@ def criar_utilizador():
 
     return render_template('criar_utilizador.html', form=form)
 
-# Alias so templates that call url_for('auth.register') work without changing them
-@auth_bp.route('/register', methods=['GET', 'POST'])
-def register():
-    return criar_utilizador()
+# rota para inserir cliente (antes tinha duplicação). Ajuste a action/template conforme o seu projeto.
+@auth_bp.route('/inserir_cliente', methods=['GET', 'POST'])
+def inserir_cliente():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        # exemplo de criação de Cliente (importe/ajuste o modelo Cliente conforme o seu ficheiro models/__init__.py)
+        from models import Cliente  # import tardio do modelo cliente se preferir
+        if Cliente.query.filter_by(email=form.email.data).first():
+            flash("Email do cliente já existe.", "danger")
+            return render_template('login.html', reg_form=form, form=None)
 
+        cliente = Cliente(
+            nome=form.nome.data,
+            morada=form.morada.data,
+            localidade=form.localidade.data,
+            codigo_postal=form.codigo_postal.data,
+            concelho1=form.concelho1.data,
+            concelho2=form.concelho2.data,
+            nif=form.nif.data,
+            email=form.email.data
+        )
+        db.session.add(cliente)
+        db.session.commit()
+        flash("Cliente inserido com sucesso.", "success")
+        return redirect(url_for('auth.login'))
+
+    return render_template('login.html', reg_form=form, form=None)
+
+# manter alias se necessário
+@auth_bp.route('/register', methods=['GET', 'POST'])
+def register_alias():
+    return redirect(url_for('inserir_cliente'))
