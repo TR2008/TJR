@@ -87,6 +87,7 @@
         .icon.fb{ background:#1877F2; }
         .icon.wa{ background:#25D366; color:#0a3f24; }
         .icon.mail{ background:#D44638; }
+        .icon.tg{ background:#0088cc; } /* Telegram color */
 
         a, a:visited{
           color:var(--accent);
@@ -108,7 +109,7 @@
           .contact-item{ flex:1 1 100%; }
         }
 
-        /* botão WhatsApp flutuante (opcional) */
+        /* botão WhatsApp flutuante */
         .whatsapp-fab{
           position:fixed;
           right:18px;
@@ -125,6 +126,30 @@
           z-index:9999;
         }
         .whatsapp-fab i{ font-size:28px; color:#fff; }
+
+        /* botão Telegram flutuante */
+        .telegram-fab{
+          position:fixed;
+          right:18px;
+          bottom:96px; /* acima do WhatsApp button */
+          background:#0088cc;
+          color:#fff;
+          border-radius:50%;
+          width:56px;
+          height:56px;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          box-shadow:0 6px 18px rgba(0,0,0,0.18);
+          z-index:9999;
+        }
+        .telegram-fab i{ font-size:24px; color:#fff; }
+
+        /* opcional: empilhar os botões melhor em small screens */
+        @media (max-width:420px){
+          .telegram-fab{ right:14px; bottom:86px; width:52px; height:52px; }
+          .whatsapp-fab{ right:14px; bottom:14px; width:60px; height:60px; }
+        }
     </style>
 </head>
 <body>
@@ -164,18 +189,16 @@
                 <a href="https://wa.me/351969362576" target="_blank" rel="noopener noreferrer">+351 969 362 576</a>
             </div>
         </div>
-        <!-- Telegram bot: substitui @Hvacsolution81Bot pelo username do teu bot -->
-        <div class="contact-item">
-            <div class="icon"><i class="fa fa-telegram" style="font-size:36px;color:#0088cc"></i></div>
-            <div>
-                <div><strong>Telegram Bot</strong></div>
-                <div class="small">
-                    <a class="contact-link" href="https://t.me/Hvacsolution81Bot" target="_blank"
-                       rel="noopener noreferrer">@Hvacsolution81Bot</a>
-                </div>
+
+        <div class="contact-item" role="listitem">
+            <div class="icon tg" aria-hidden="true">
+                <i class="fa fa-telegram" style="font-size:20px;"></i>
+            </div>
+            <div class="meta">
+                <span class="label">Telegram</span>
+                <a href="https://t.me/Hvacsolution81Bot" target="_blank" rel="noopener noreferrer">@Hvacsolution81Bot</a>
             </div>
         </div>
-
 
         <div class="contact-item" role="listitem">
             <div class="icon mail" aria-hidden="true">
@@ -192,6 +215,13 @@
         © HVACSolution81
     </footer>
 </div>
+
+<!-- botão Telegram flutuante -->
+<a class="telegram-fab"
+   href="https://t.me/Hvacsolution81Bot"
+   target="_blank" rel="noopener noreferrer" aria-label="Abrir Telegram">
+    <i class="fa fa-telegram"></i>
+</a>
 
 <!-- botão WhatsApp flutuante -->
 <a class="whatsapp-fab"
